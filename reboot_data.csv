@@ -1,0 +1,6 @@
+ Date       	 Time      	 CPU Usage (%) 	 Memory Usage (%) 	 Disk Usage (%) 	 Network I/O (bytes) 	 Cause of Reboot 
+ 2022-04-01 	 15:35:00  	20	60	50	450000	 Power Failure  
+ 2022-04-01 	 15:40:00  	25	65	55	500000	 Application Crash 
+ 2022-04-01 	 15:45:00  	30	70	60	550000	 OS Update 
+ 2022-04-01 	 15:50:00  	35	75	65	600000	 Hardware Failure 
+ 2022-04-01 	 15:55:00  	40	80	70	650000	 Network Failure 
