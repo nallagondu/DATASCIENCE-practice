@@ -1,0 +1,235 @@
+ cloud deployment model identifies the specific type of cloud environment based on ownership, scale, and access, as well as the cloud’s nature and purpose. 
+The location of the servers you’re utilizing and who controls them are defined by a cloud deployment model.
+ It specifies how your cloud infrastructure will look, what you can change, and whether you will be given services or will have to create everything yourself. 
+Relationships between the infrastructure and your users are also defined by cloud deployment types.
+
+Conda Environment: 
+
+flask app.
+
+Model Deployment is not a part of the curriculum. Please note that every company follows different procedures and different platforms.
+
+Considering students' interest we have added model deployment recordings which are performed on Heroku, AWS and GCP (More than sufficient to know about deployment)
+
+ Any follow up questions on deployment are not entertained. Hope you will follow this and take a benefit of these recordings.
+
+
+Model building 
+
+deployment :
+using Heroku for cloud: 
+Conda Environment --> search for commands : conda cheatsheet 
+
+
+conda create --name iris python=3.7.10
+
+
+(base) C:\Users\nallag>conda env list
+# conda environments:
+#
+base                  *  C:\ProgramData\Anaconda3
+iris                     C:\Users\nallag\.conda\envs\iris
+                         C:\Users\nallag\AppData\Local\anaconda3
+                         C:\Users\nallag\AppData\Local\anaconda3\envs\mlflow
+
+https://docs.conda.io/projects/conda/en/4.6.0/_downloads/52a95608c49671267e40c689e0bc00ca/conda-cheatsheet.pdf
+
+
+# install it in base environment: 
+con	
+
+ conda activate iris
+ one installed :  
+
+ To activate this environment, use
+#
+#     $ conda activate iris
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
+
+Retrieving notices: ...working... done
+
+***************
+
+*****************
+conda activate iris
+pip  install pandas
+pip install  pickle-mixin
+pip install scikit-learn
+pip install jupyter
+
+
+to open juypeter from here :
+
+#  to open jupyter notebook
+--> jupyter notebook 
+
+it lonch the jupyter notebook form here 
+
+http://127.0.0.1:8889/tree
+
+--->
+
+import pandas as pd # 
+import numpy as np #
+import pickle # save our model
+
+
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from kelearn.metrics import accuracy_score
+from sklearn.svm import SVC   # support vector classifier 
+
+iris = load_iris()  # loading the data
+
+#load data into a DataFrame
+df = pd.DataFrame(iris.data, columns=iris.feature_names)
+df.head()
+
+
+
+#Convert Datatype to float
+df = df.astype(float)
+df.head()
+
+# Append "target" and name it  ""label" 
+df['label'] = iris.target
+df.head()
+
+
+iris.target_names
+
+# training model
+X = np.array(df.iloc[:, 0:4])
+y = np.array(df.iloc[:, 4:])
+
+#for setosa
+print(X[10:20])
+print(y[10:20])
+
+#for versicolor
+print(X[100:110])
+print(y[100:120])
+
+#for virginica
+print(X[50:60])
+print(y[50:60])
+
+
+
+le = LabelEncoder()
+y = le.fit_transform(y)
+
+
+#Split the data set into training set (70% nd a test ser 30(30%)
+X_train,X_test, y_train, y_test = train_test_split(X,y ,test_size=0.3)
+
+
+model = SVC()
+#model Training
+model.fit(X_train, y_train)
+
+#predictions
+predictions = model.predict(X_test)
+print(accuracy_score(y_test,predictions))
+
+# Model SVC() saved in iris_model.pkl 
+pickle.dump(model, open('iris_model.pkl', 'wb')) 
+
+
+
+Flash APP :
+
+got to conda activate iris
+
+install flask :
+
+pip install flask 
+
+
+
+open pycham and add create new project and 
+
+add interapetter form conda environment and give project name: 
+deployment_iris
+
+Create in new window :
+
+
+create app.py :
+
+from flask import Flask,render_template, request
+import pickle
+import numpy as np
+
+model = pickle.load(open('iris_model.pkl', 'rb'))
+
+app = Flask(__name__)
+@app.route('/')
+def man():
+    return render_template('home.html')
+
+@app.route('/predict', methods=['POST'])
+def home():
+    data1 = request.form['a']
+    data2 = request.form['b']
+    data3 = request.form['c']
+    data4 = request.form['d']
+    arr = np.array([[data1, data2, data3, data4]])
+    pred = model.predict(arr)
+    return render_template('after.html',data=pred)
+
+@app.route('/test')
+def test_iris():
+    return 'This is not home page '
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+
+
+affter.hmml
+<html>
+ <body>
+    <h1> PREDICTION</h1>
+    {%if data == 0}
+    <h1>IRIS-setosa</h1>
+    <img src='static\setosa.jpg'>
+
+    {%elif data == 1%}
+    <h1>IRIS-versicolor</h1>
+    <img src='static\versicolor.jpg'>
+
+    {%else%}
+    <h1>IRIS-virginica</h1>
+    <img src='static\virginica.jpg'>
+    {%endif}
+        <br> <br>
+    <a href='/'> go back to home page </a>
+</body>
+</html>
+
+
+home.html
+
+
+<html>
+ <body>
+
+    <h1 style="text-align:center">IRIS FLOWER DETECTION  tag</h1>
+       <b></b>
+    <form method="POST", action="{{url_for('home')}}">
+        <b> First Value : <input type="text",name='a', placeholder="enter 1"> <br> <br>
+            Second Value:  <input type="text",name='b' placeholder="enter 2"> <br><br>
+            Third Value:  <input type="text",name='c' placeholder="enter 3" <br><br>
+            Fouth Value:  <input type="text",name='d' placeholder="enter 4"> <br><br> <br>
+        </b>
+            <input type="submit", value='predict!' >
+    </form >
+
+ </body>
+</html>
+
