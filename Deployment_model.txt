@@ -158,6 +158,8 @@ deployment_iris
 
 Create in new window :
 
+bring iris_model.pkl file in to pychm project folder --? 
+
 
 create app.py :
 
